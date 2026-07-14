@@ -14,17 +14,7 @@ At the historical analysis level, 6,418 customers were analyzed with an overall 
 
 <br>
 
-## Dashboard
 
-**Summary Page** — KPIs, demographic breakdown, service usage analysis, geographic churn rates, and churn category distribution.
-
-![Summary Dashboard](Power%20BI%20Dashboard%20Screenshots/Summary%20Page.png)
-
-**Prediction Page** — XGBoost-predicted churner profiles with a scrollable at-risk customer table showing individual revenue, charges, and referral data.
-
-![Prediction Dashboard](Power%20BI%20Dashboard%20Screenshots/Predictions%20Page.png)
-
-<br>
 
 ## Key Numbers
 
@@ -122,41 +112,3 @@ Customer Churn Analysis Project/
 | XGBoost | 0.8386 | 0.7131 | 0.7378 | 0.7252 |
 | LightGBM | 0.8228 | 0.6642 | 0.7810 | 0.7179 |
 
-XGBoost was selected. Hyperparameter tuning pushed accuracy to 86% but dropped recall on the churn class to 65%. In a retention context that tradeoff goes the wrong way, a missed churner is a lost customer, so recall matters more than overall accuracy. The baseline XGBoost catches roughly 10% more actual churners and that's the version that ships.
-
-**ChurnRadar** is the Streamlit app. Upload the two `.joblib` files and a customer CSV, and the dashboard runs predictions automatically. A threshold slider (default 50%) controls which customers appear. Customers get tagged Critical (≥90%), High (75-90%), or Medium (<75%) and the retention team can filter, drill into individual profiles, and export a targeted contact list.
-
-<br>
-
-## Running It Locally
-
-You'll need SQL Server (Express works fine) with ODBC Driver 17, Power BI Desktop, and Python 3.10 or later.
-
-Install the Python dependencies:
-
-```bash
-pip install pandas numpy scikit-learn xgboost lightgbm joblib sqlalchemy pyodbc streamlit matplotlib seaborn
-```
-
-Run the SQL scripts in order (01 through 06). Update the file path in `01_etl_pipeline.sql` to point at your local `Customer_Data.csv` before running.
-
-Open `Churn_Predictions.ipynb` and run all cells. It connects to SQL Server, trains the model, and exports `churn_preprocessor.joblib`, `baseline_xgb_model.joblib`, and `high_risk_churn_list.csv` into the `Machine Learning Predictions/` folder.
-
-Open `Churn Analysis.pbix` in Power BI Desktop and refresh the data source connection to `db_Churn`. The Prediction page needs `high_risk_churn_list.csv` connected as a flat file source.
-
-Launch ChurnRadar:
-
-```bash
-streamlit run "Streamlit App/churn_prediction.py"
-```
-
-Then upload the two joblib files and your customer CSV from the sidebar.
-
-<br>
-
-## About
-
-**Shehraz Sarwar**
-Aspiring Data Scientist | IBM Certified Data Analyst | Ex Data Science Intern @10Pearls | Section Leader Stanford CIP '25
-
-[![LinkedIn](https://img.shields.io/badge/LinkedIn-0A66C2?style=flat&logo=linkedin&logoColor=white)](https://www.linkedin.com/in/shehraz-sarwar-ghouri-321394247/)
