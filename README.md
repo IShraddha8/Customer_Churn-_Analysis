@@ -69,46 +69,7 @@ Customer Churn Analysis Project/
 │   ├── 04_imputation_strategy.sql
 │   ├── 05_clean_table.sql
 │   └── 06_analytical_views.sql
-│
-├── Streamlit App/
-│   └── churn_prediction.py
-│
-├── Churn Analysis.pbix
-├── Power BI Dashboard.pdf
-└── Power BI Report - Insights.pdf
-```
 
-<br>
 
-## Tech Stack
 
-| Layer | Tool |
-|---|---|
-| Data Storage | Microsoft SQL Server (T-SQL) |
-| Business Intelligence | Power BI Desktop |
-| Language | Python 3.12 |
-| ML Libraries | scikit-learn, XGBoost, LightGBM |
-| Data Handling | Pandas, NumPy |
-| Visualisation | Matplotlib, Seaborn |
-| Live Dashboard | Streamlit |
-| Model Persistence | joblib |
-| DB Connector | SQLAlchemy + pyodbc |
-
-<br>
-
-## How the Pipeline Works
-
-**SQL Server** handles everything from raw data ingestion to producing clean, analysis-ready views. The pipeline runs across six scripts. Raw CSV data lands in a staging table first (`dbo.stg_Churn`). A null audit runs across all 32 columns. Missing values in service columns are filled with `No` or `None` rather than dropped, because a null there means the customer simply doesn't subscribe, it's not missing data. Churn classification nulls go into an `Others` bucket. The cleaned data writes into a production table (`dbo.prod_Churn`), and two SQL views split it by customer status: `vw_ChurnData` for historical training data, `vw_JoinData` for new joiners.
-
-**Power BI** connects directly to those views. No manual CSV exports needed for the BI layer. The two-page report includes slicers for Monthly Charge Range and Marital Status that filter across all visuals simultaneously.
-
-**The Jupyter Notebook** pulls from SQL Server using SQLAlchemy, runs preprocessing through a `ColumnTransformer` pipeline (OrdinalEncoder for Contract, OneHotEncoder for the remaining 18 categorical columns, passthrough for numerics), trains three models, and serializes the winner.
-
-**Three models were compared:**
-
-| Model | Accuracy | Precision | Recall | F1 |
-|---|---|---|---|---|
-| Random Forest | 0.8378 | 0.7123 | 0.7349 | 0.7234 |
-| XGBoost | 0.8386 | 0.7131 | 0.7378 | 0.7252 |
-| LightGBM | 0.8228 | 0.6642 | 0.7810 | 0.7179 |
 
